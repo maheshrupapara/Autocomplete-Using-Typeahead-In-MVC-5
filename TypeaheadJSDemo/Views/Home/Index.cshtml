@@ -1,0 +1,47 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+<br />
+<div class="row">
+    <div class="form-group col-md-5">
+        <input type="text" id="select" class="form-control" />
+    </div>
+    <div class="form-group col-md-5">
+        <input type="text" id="update" disabled class="form-control" />
+    </div>
+</div>
+<script>
+    $("#select").typeahead({
+        minLength: 1,
+        source: function (request, response) {
+            $.ajax({
+                url: "/Home/GetList/",
+                data: { "name": request },
+                type: "GET",
+                contentType: "json",
+                success: function (data) {
+                    debugger
+                    items = [];
+                    map = {};
+                    $.each(data, function (i, item) {
+                        var id = item.Name;
+                        var name = item.Name;
+                        map[name] = { id: id, name: name };
+                        items.push(name);
+                    });
+                    response(items);
+                },
+                error: function (response) {
+                    alert(response.responseText);
+                },
+                failure: function (response) {
+                    alert(response.responseText);
+                }
+            });
+        },
+        updater: function (item) {
+            $("#update").val(map[item].id);
+            return item;
+        }
+    });
+</script>
